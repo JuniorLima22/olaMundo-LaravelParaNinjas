@@ -1,7 +1,21 @@
 @extends('layouts.app')
 @section('title', 'Listagem de Produtos')
 @section('content')
-	<h1>@yield('title') - {{link_to('/produtos/create', 'Cadastrar Produto', ['class'=>'btn btn-outline-secondary'])}}</h1>
+	<h1>@yield('title') {{link_to('/produtos/create', 'Cadastrar Produto', ['class'=>'btn btn-outline-secondary'])}}</h1>
+
+	{{Form::open(['url'=>['produtos/buscar']])}}
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="input-group">
+					{{Form::text('busca', $busca, ['class'=>'form-control', 'required', 'placeholder'=>'Buscar'])}}
+
+					<span class="input-group-btn">
+						{{Form::submit('Buscar', ['class'=>'btn btn-default'])}}
+					</span>
+				</div>
+			</div>
+		</div>
+	{{Form::close()}}
 
 	<div class="row">
 	  <div class="col-md-12">

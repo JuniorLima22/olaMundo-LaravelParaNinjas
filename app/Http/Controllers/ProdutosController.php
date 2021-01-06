@@ -17,10 +17,11 @@ class ProdutosController extends Controller
     public function index()
     {
         $produtos = Produto::all();
+        $busca = NULL;
     	// dd($produtos);
     	// Enviando dados pra view produtos
     	// return view('produto.index', array('produtos' => $produtos ));
-        return view('produto.index', compact('produtos'));
+        return view('produto.index', compact('produtos','busca'));
     }
 
     /**
@@ -128,5 +129,19 @@ class ProdutosController extends Controller
         $produto->delete();
         Session::flash('mensagem', 'Produto excluido com sucesso!');
         return redirect()->back();
+    }
+
+    /**
+     * Displays the search feature
+     *
+     * @param string $busca
+     * @author Junior Lima
+     **/
+    public function buscar(Request $request)
+    {
+        $produtos = Produto::where('titulo', 'LIKE', '%'. $request->input('busca'). '%')->orwhere('descricao', 'LIKE', '%'. $request->input('busca'). '%')->get();
+        $busca = $request->input('busca');
+
+        return view('produto.index', compact('produtos', 'busca'));
     }
 }
