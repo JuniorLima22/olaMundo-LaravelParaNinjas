@@ -2,7 +2,6 @@
 @section('title', 'Listagem de Produtos')
 @section('content')
 	<h1>@yield('title') {{link_to('/produtos/create', 'Cadastrar Produto', ['class'=>'btn btn-outline-secondary'])}}</h1>
-
 	{{Form::open(['url'=>['produtos/buscar']])}}
 		<div class="row">
 			<div class="col-lg-12">
@@ -56,6 +55,8 @@
 				</div>
 			</div>
 		@endforeach
+
+		{{$produtos->links('pagination::bootstrap-4')}}
 	</div>
 	<br>
 @endsection

@@ -16,11 +16,10 @@ class ProdutosController extends Controller
      */
     public function index()
     {
-        $produtos = Produto::all();
+        // $produtos = Produto::all();
+        $produtos = Produto::paginate(4);
         $busca = NULL;
-    	// dd($produtos);
     	// Enviando dados pra view produtos
-    	// return view('produto.index', array('produtos' => $produtos ));
         return view('produto.index', compact('produtos','busca'));
     }
 
@@ -139,7 +138,7 @@ class ProdutosController extends Controller
      **/
     public function buscar(Request $request)
     {
-        $produtos = Produto::where('titulo', 'LIKE', '%'. $request->input('busca'). '%')->orwhere('descricao', 'LIKE', '%'. $request->input('busca'). '%')->get();
+        $produtos = Produto::where('titulo', 'LIKE', '%'. $request->input('busca'). '%')->orwhere('descricao', 'LIKE', '%'. $request->input('busca'). '%')->paginate(4);
         $busca = $request->input('busca');
 
         return view('produto.index', compact('produtos', 'busca'));

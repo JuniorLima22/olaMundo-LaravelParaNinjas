@@ -1,5 +1,3 @@
-
-
 @extends('layouts.app')
 @section('title', $produto->titulo)
 @section('content')
