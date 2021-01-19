@@ -26,3 +26,8 @@ Route::resource('/contato', 'ContatoController');
 Route::resource('/produtos', 'ProdutosController');
 
 Route::post('produtos/buscar', 'ProdutosController@buscar');
+
+// Adicionando rotas em português
+// Route::get('adicionar-produto', 'ProdutosController@create');
+
+// Route::get('produtos/{id}/editar', 'ProdutosController@edit');
