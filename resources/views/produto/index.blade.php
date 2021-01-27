@@ -36,27 +36,30 @@
 
 				@if(file_exists("./img/produtos/". md5($produto->id). ".jpg"))
 					<a href="{{url('produtos/'.$produto->id)}}">
-						<!-- <div class="img-thumbnail">
-							{{Html::image(asset("img/produtos/". md5($produto->id). ".jpg"))}}
-						</div> -->
-
 						<img src='{{asset("img/produtos/". md5($produto->id). ".jpg")}}' title="{{$produto->titulo}}" class="img-thumbnail">
 					</a>
 				@else
 					{{link_to('/produtos/'. $produto->id, $produto->titulo, ['class'=>'btn btn-outline-secondary'])}}
 				@endif
 				<div class="mt-2">
-				{{Form::open(['route'=>['produtos.destroy', $produto->id], 'method'=>'DELETE'])}}
+					@if(Auth::check())
+						{{Form::open(['route'=>['produtos.destroy', $produto->id], 'method'=>'DELETE'])}}
 
-				{{link_to('/produtos/'. $produto->id. '/edit', 'Editar', ['class'=>'btn btn-outline-primary'])}}
+						{{link_to('/produtos/'. $produto->id. '/edit', 'Editar', ['class'=>'btn btn-outline-primary'])}}
 
-				{{Form::submit('Excluir', ['class'=>'btn btn-outline-danger'])}}
-				{{Form::close()}}
+						{{Form::submit('Excluir', ['class'=>'btn btn-outline-danger'])}}
+						{{Form::close()}}
+					@endif
 				</div>
 			</div>
 		@endforeach
 
-		{{$produtos->links('pagination::bootstrap-4')}}
+	</div>
+
+	<div class="row mt-4 ">
+		<div class="col-12 ">
+			{{$produtos->links('pagination::bootstrap-4')}}
+		</div>
 	</div>
 	<br>
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 // use\App\Requests;
 use App\Produto;
 use Session;
@@ -30,7 +31,12 @@ class ProdutosController extends Controller
      */
     public function create()
     {
-        return view('produto.create');
+        // Validadando usuário logado
+        if (Auth::check()) {
+            return view('produto.create');
+        }else{
+            return redirect('login');
+        }
     }
 
     /**
@@ -41,21 +47,27 @@ class ProdutosController extends Controller
      */
     public function store(Request $request)
     {
-        // Validadando dados do formulário
-        $this->validate($request, [
-          'referencia' => 'required|unique:produtos|min:3',
-          'titulo' => 'required|min:3',
-        ]);
+        // Validadando usuário logado
+        if (Auth::check()) {
 
-        // Cadastrando produto
-        $produto = new Produto();
-        $produto->referencia = $request->input('referencia');
-        $produto->titulo = $request->input('titulo');
-        $produto->descricao = $request->input('descricao');
-        $produto->preco = $request->input('preco');
-        if ($produto->save()) {
-            Session::flash('mensagem', 'Produto cadastrado com sucesso!');
-            return redirect('produtos');
+            // Validadando dados do formulário
+            $this->validate($request, [
+              'referencia' => 'required|unique:produtos|min:3',
+              'titulo' => 'required|min:3',
+            ]);
+
+            // Cadastrando produto
+            $produto = new Produto();
+            $produto->referencia = $request->input('referencia');
+            $produto->titulo = $request->input('titulo');
+            $produto->descricao = $request->input('descricao');
+            $produto->preco = $request->input('preco');
+            if ($produto->save()) {
+                Session::flash('mensagem', 'Produto cadastrado com sucesso!');
+                return redirect('produtos');
+            }
+        }else{
+            return redirect('login');
         }
     }
 
@@ -79,8 +91,13 @@ class ProdutosController extends Controller
      */
     public function edit($id)
     {
-        $produto = Produto::find($id);
-        return view('produto.edit', compact('produto'));
+        // Validadando usuário logado
+        if (Auth::check()) {
+            $produto = Produto::find($id);
+            return view('produto.edit', compact('produto'));
+        }else{
+            return redirect('login');
+        }
     }
 
     /**
@@ -92,27 +109,33 @@ class ProdutosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validadando dados do formulário
-        $this->validate($request, [
-            'referencia' => 'required|min:3',
-            'titulo' => 'required|min:3',
-        ]);
+        // Validadando usuário logado
+        if (Auth::check()) {
 
-        if ($request->hasFile('fotoproduto')) {
-          $imagem = $request->file('fotoproduto');
-          $nomeArquivo = md5($id). ".". $imagem->getClientOriginalExtension();
-          $request->file('fotoproduto')->move(public_path('./img/produtos/'), $nomeArquivo);
-        }
+            // Validadando dados do formulário
+            $this->validate($request, [
+                'referencia' => 'required|min:3',
+                'titulo' => 'required|min:3',
+            ]);
 
-        $produto = Produto::find($id);
-        $produto->referencia = $request->input('referencia');
-        $produto->titulo = $request->input('titulo');
-        $produto->descricao = $request->input('descricao');
-        $produto->preco = $request->input('preco');
+            if ($request->hasFile('fotoproduto')) {
+              $imagem = $request->file('fotoproduto');
+              $nomeArquivo = md5($id). ".". $imagem->getClientOriginalExtension();
+              $request->file('fotoproduto')->move(public_path('./img/produtos/'), $nomeArquivo);
+            }
 
-        if ($produto->save()) {
-            Session::flash('mensagem', 'Produto alterado com sucesso!');
-            return redirect()->back();
+            $produto = Produto::find($id);
+            $produto->referencia = $request->input('referencia');
+            $produto->titulo = $request->input('titulo');
+            $produto->descricao = $request->input('descricao');
+            $produto->preco = $request->input('preco');
+
+            if ($produto->save()) {
+                Session::flash('mensagem', 'Produto alterado com sucesso!');
+                return redirect()->back();
+            }
+        }else{
+            return redirect('login');
         }
     }
 
@@ -124,10 +147,15 @@ class ProdutosController extends Controller
      */
     public function destroy($id)
     {
-        $produto = Produto::find($id);
-        $produto->delete();
-        Session::flash('mensagem', 'Produto excluido com sucesso!');
-        return redirect()->back();
+        // Validadando usuário logado
+        if (Auth::check()) {
+            $produto = Produto::find($id);
+            $produto->delete();
+            Session::flash('mensagem', 'Produto excluido com sucesso!');
+            return redirect()->back();
+        }else{
+            return redirect('login');
+        }
     }
 
     /**
